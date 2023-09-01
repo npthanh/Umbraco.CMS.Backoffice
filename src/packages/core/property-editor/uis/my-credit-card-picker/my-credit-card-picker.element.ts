@@ -73,7 +73,6 @@ export class UmbCreditCardPickerElement extends UmbElementMixin(LitElement) impl
 	};
 
 	render() {
-		console.log("render", this._filteredCards)
 		return repeat(this._filteredCards,
 			(card) => card.value,
 			(card) =>
