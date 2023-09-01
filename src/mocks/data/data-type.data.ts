@@ -628,6 +628,15 @@ export const data: Array<DataTypeResponseModel | FolderTreeItemResponseModel> = 
 		propertyEditorUiAlias: 'Umb.PropertyEditorUi.MemberGroupPicker',
 		values: [],
 	},
+	{
+		type: 'data-type',
+		name: 'Credit Card Picker',
+		id: 'dt-myCreditCardPicker',
+		parentId: null,
+		propertyEditorAlias: 'Umbraco.Label',
+		propertyEditorUiAlias: 'My.PropertyEditorUi.CreditCardPicker',
+		values: [],
+	},
 ];
 
 const createDataTypeItem = (item: DataTypeResponseModel | FolderTreeItemResponseModel): DataTypeItemResponseModel => {

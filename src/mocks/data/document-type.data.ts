@@ -21,6 +21,24 @@ export const data: Array<DocumentTypeResponseModel> = [
 		isElement: false,
 		properties: [
 			{
+				id: '123456789',
+				containerId: 'all-properties-group-key',
+				alias: 'creditCard',
+				name: 'Credit Card',
+				dataTypeId: 'dt-myCreditCardPicker',
+				variesByCulture: true,
+				variesBySegment: false,
+				validation: {
+					mandatory: false,
+					mandatoryMessage: null,
+					regEx: null,
+					regExMessage: null,
+				},
+				appearance: {
+					labelOnTop: false,
+				},
+			},
+			{
 				id: '1',
 				containerId: 'all-properties-group-key',
 				alias: 'richTextEditor',

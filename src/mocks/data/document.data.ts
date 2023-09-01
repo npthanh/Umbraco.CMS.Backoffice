@@ -22,6 +22,13 @@ export const data: Array<DocumentResponseModel> = [
 		contentTypeId: 'all-property-editors-document-type-id',
 		values: [
 			{
+				alias: 'creditCard',
+				culture: null,
+				segment: null,
+				value:
+					'visa',
+			},
+			{
 				alias: 'richTextEditor',
 				culture: null,
 				segment: null,

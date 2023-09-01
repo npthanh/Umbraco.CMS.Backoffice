@@ -30,6 +30,8 @@ import { manifests as numbers } from './number/manifests.js';
 import { manifest as userPicker } from './user-picker/manifests.js';
 import { manifest as memberPicker } from './member-picker/manifests.js';
 import { manifest as memberGroupPicker } from './member-group-picker/manifests.js';
+
+import { manifest as myCreditCardPicker } from './my-credit-card-picker/manifest.js';
 import type { ManifestPropertyEditorUi } from '@umbraco-cms/backoffice/extension-registry';
 
 export const manifests: Array<ManifestPropertyEditorUi> = [
@@ -65,6 +67,7 @@ export const manifests: Array<ManifestPropertyEditorUi> = [
 	...blockGrid,
 	...collectionView,
 	...tinyMCE,
+	myCreditCardPicker,
 	{
 		type: 'propertyEditorUi',
 		alias: 'Umb.PropertyEditorUi.Number',
