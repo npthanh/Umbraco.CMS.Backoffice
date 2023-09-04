@@ -14,6 +14,10 @@ export const plugins: PluginOption[] = [
 				dest: 'App_Plugins',
 			},
 			{
+				src: 'public-assets/App_Plugins/*.json',
+				dest: 'App_Plugins',
+			},
+			{
 				src: 'public-assets/App_Plugins/custom-bundle-package/*.js',
 				dest: 'App_Plugins/custom-bundle-package',
 			},

@@ -1,15 +1,15 @@
 // TODO: Do not use Umb in the name here:
 import { UmbCreditCardElement } from './my-credit-card.element.js';
 import { html, customElement, property, state, css, LitElement, repeat } from '@umbraco-cms/backoffice/external/lit';
-import { tryExecuteAndNotify } from '@umbraco-cms/backoffice/resources';
-import { UMB_VARIANT_CONTEXT } from '@umbraco-cms/backoffice/workspace';
 import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
 import { UmbPropertyEditorExtensionElement } from '@umbraco-cms/backoffice/extension-registry';
-import { UmbVariantId } from '@umbraco-cms/backoffice/variant';
 import { UUITextStyles } from '@umbraco-cms/backoffice/external/uui';
 import type { UmbDataTypeConfigCollection } from '@umbraco-cms/backoffice/components';
 
 import './my-credit-card.element.js';
+import { UMB_VARIANT_DATASET_CONTEXT } from '@umbraco-cms/backoffice/workspace';
+import { UmbVariantId } from '@umbraco-cms/backoffice/variant';
+import { tryExecuteAndNotify } from '@umbraco-cms/backoffice/resources';
 
 @customElement('umb-credit-card-picker')
 export class UmbCreditCardPickerElement extends UmbElementMixin(LitElement) implements UmbPropertyEditorExtensionElement {
@@ -25,29 +25,37 @@ export class UmbCreditCardPickerElement extends UmbElementMixin(LitElement) impl
 
 	#variantId: UmbVariantId | undefined;
 
-	#allCards: any[] = [];
+	#allCards = [
+		{
+			name: 'Visa',
+			value: 'visa',
+			cultures: ['en-us', 'da-dk']
+		},
+		{
+			name: 'Mastercard',
+			value: 'mastercard',
+			cultures: ['en-us', 'da-dk']
+		},
+		{
+			name: 'Dankort',
+			value: 'dankort',
+			cultures: ['da-dk']
+		},
+	];
 
 	constructor() {
 		super();
 
-		this.consumeContext(UMB_VARIANT_CONTEXT, (context) => {
+
+		this.consumeContext(UMB_VARIANT_DATASET_CONTEXT, (context) => {
 			this.#variantId = context.getVariantId();
 			this.filterCards();
 		});
 
-
-		tryExecuteAndNotify(this,
-			fetch(`/App_Plugins/credit-cards.json`)
-			//.then((res) => res.json())
-		).then(async (response) => {
-			if(response.data) {
-
-				const json = await response.data.json();
-				this.#allCards = json.availableCards;
-				this.filterCards();
-			}
-		});
-
+		/*
+		tryExecuteAndNotify(this, fetch(`/umbraco/management/api/v1/media/details/`)
+		.then((res) => res.json()))
+		*/
 
 	}
 
