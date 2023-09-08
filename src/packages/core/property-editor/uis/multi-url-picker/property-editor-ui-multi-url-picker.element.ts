@@ -1,12 +1,12 @@
 import { html, customElement, property, state } from '@umbraco-cms/backoffice/external/lit';
-import { UUITextStyles } from '@umbraco-cms/backoffice/external/uui';
+import { UmbTextStyles } from "@umbraco-cms/backoffice/style";
 import type { UUIModalSidebarSize } from '@umbraco-cms/backoffice/external/uui';
 import { UmbInputMultiUrlElement } from '@umbraco-cms/backoffice/components';
 import { UMB_WORKSPACE_PROPERTY_CONTEXT_TOKEN } from '@umbraco-cms/backoffice/workspace';
 import { UmbLinkPickerLink } from '@umbraco-cms/backoffice/modal';
 import { UmbPropertyEditorExtensionElement } from '@umbraco-cms/backoffice/extension-registry';
 import { UmbLitElement } from '@umbraco-cms/internal/lit-element';
-import type { UmbDataTypeConfigCollection } from '@umbraco-cms/backoffice/components';
+import type { UmbPropertyEditorConfigCollection } from '@umbraco-cms/backoffice/property-editor';
 
 /**
  * @element umb-property-editor-ui-multi-url-picker
@@ -20,7 +20,7 @@ export class UmbPropertyEditorUIMultiUrlPickerElement
 	value: UmbLinkPickerLink[] = [];
 
 	@property({ attribute: false })
-	public set config(config: UmbDataTypeConfigCollection | undefined) {
+	public set config(config: UmbPropertyEditorConfigCollection | undefined) {
 		this._overlaySize = config?.getValueByAlias('overlaySize');
 		this._hideAnchor = config?.getValueByAlias('hideAnchor');
 		this._ignoreUserStartNodes = config?.getValueByAlias('ignoreUserStartNodes');
@@ -80,7 +80,7 @@ export class UmbPropertyEditorUIMultiUrlPickerElement
 			.urls="${this.value ?? []}"></umb-input-multi-url>`;
 	}
 
-	static styles = [UUITextStyles];
+	static styles = [UmbTextStyles];
 }
 
 export default UmbPropertyEditorUIMultiUrlPickerElement;

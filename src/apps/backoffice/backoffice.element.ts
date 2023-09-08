@@ -1,7 +1,6 @@
 import { UmbBackofficeContext, UMB_BACKOFFICE_CONTEXT_TOKEN } from './backoffice.context.js';
 import { UmbServerExtensionRegistrator } from './server-extension-registrator.controller.js';
 import { css, html, customElement } from '@umbraco-cms/backoffice/external/lit';
-import { UUITextStyles } from '@umbraco-cms/backoffice/external/uui';
 import { umbExtensionsRegistry } from '@umbraco-cms/backoffice/extension-registry';
 import {
 	UmbBundleExtensionInitializer,
@@ -25,14 +24,14 @@ const CORE_PACKAGES = [
 	import('../../packages/templating/umbraco-package.js'),
 	import('../../packages/umbraco-news/umbraco-package.js'),
 	import('../../packages/tags/umbraco-package.js'),
+	import('../../packages/log-viewer/umbraco-package.js'),
 ];
 
 @customElement('umb-backoffice')
 export class UmbBackofficeElement extends UmbLitElement {
-
 	/**
 	 * Backoffice extension registry.
-	 * This enables to registerer og unregister extensions via DevTools, or just via querying this element via the DOM.
+	 * This enables to register and unregister extensions via DevTools, or just via querying this element via the DOM.
 	 * @type {UmbExtensionsRegistry}
 	 */
 	public extensionRegistry = umbExtensionsRegistry;
@@ -50,7 +49,6 @@ export class UmbBackofficeElement extends UmbLitElement {
 			const packageModule = await packageImport;
 			umbExtensionsRegistry.registerMany(packageModule.extensions);
 		});
-
 	}
 
 	render() {
@@ -62,7 +60,6 @@ export class UmbBackofficeElement extends UmbLitElement {
 	}
 
 	static styles = [
-		UUITextStyles,
 		css`
 			:host {
 				display: flex;

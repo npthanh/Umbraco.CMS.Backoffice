@@ -100,7 +100,7 @@ export class UmbDataTypeWorkspaceContext
 		return this._configDefaultData?.find((x) => x.alias === alias)?.value;
 	}
 
-	createPropertySetContext(host: UmbControllerHost): UmbDataTypeVariantContext {
+	createVariantContext(host: UmbControllerHost): UmbDataTypeVariantContext {
 		return new UmbDataTypeVariantContext(host, this);
 	}
 

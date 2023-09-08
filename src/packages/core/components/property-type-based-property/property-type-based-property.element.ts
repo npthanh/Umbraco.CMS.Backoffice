@@ -1,5 +1,5 @@
-import { UmbDataTypeConfig } from '../../property-editor/index.js';
-import { UUITextStyles } from '@umbraco-cms/backoffice/external/uui';
+import { UmbPropertyEditorConfig } from '../../property-editor/index.js';
+import { UmbTextStyles } from "@umbraco-cms/backoffice/style";
 import { css, html, ifDefined, customElement, property, state } from '@umbraco-cms/backoffice/external/lit';
 import { UmbDataTypeRepository } from '@umbraco-cms/backoffice/data-type';
 import type { DataTypeResponseModel, PropertyTypeModelBaseModel } from '@umbraco-cms/backoffice/backend-api';
@@ -25,7 +25,7 @@ export class UmbPropertyTypeBasedPropertyElement extends UmbLitElement {
 	private _propertyEditorUiAlias?: string;
 
 	@state()
-	private _dataTypeData?: UmbDataTypeConfig;
+	private _dataTypeData?: UmbPropertyEditorConfig;
 
 	private _dataTypeRepository: UmbDataTypeRepository = new UmbDataTypeRepository(this);
 	private _dataTypeObserver?: UmbObserverController<DataTypeResponseModel | undefined>;
@@ -69,7 +69,7 @@ export class UmbPropertyTypeBasedPropertyElement extends UmbLitElement {
 	}
 
 	static styles = [
-		UUITextStyles,
+		UmbTextStyles,
 		css`
 			:host {
 				display: block;

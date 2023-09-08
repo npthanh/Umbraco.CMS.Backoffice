@@ -1,12 +1,12 @@
 import { UmbVariantId } from '../../variant/variant-id.class.js';
-import { UUITextStyles, UUIInputElement, UUIInputEvent } from '@umbraco-cms/backoffice/external/uui';
+import { UUIInputElement, UUIInputEvent } from '@umbraco-cms/backoffice/external/uui';
 import { css, html, nothing, customElement, property, state, ifDefined } from '@umbraco-cms/backoffice/external/lit';
 import {
 	UmbWorkspaceSplitViewContext,
 	UMB_WORKSPACE_SPLIT_VIEW_CONTEXT,
 	UMB_VARIANT_CONTEXT,
 	ActiveVariant,
-	IsNameablePropertySetContext,
+	isNameablePropertySetContext,
 } from '@umbraco-cms/backoffice/workspace';
 import { UmbLitElement } from '@umbraco-cms/internal/lit-element';
 import { DocumentVariantResponseModel, ContentStateModel } from '@umbraco-cms/backoffice/backend-api';
@@ -27,7 +27,7 @@ export class UmbVariantSelectorElement extends UmbLitElement {
 	}
 
 	#splitViewContext?: UmbWorkspaceSplitViewContext;
-	#datasetContext?: typeof UMB_VARIANT_CONTEXT.TYPE;
+	#variantContext?: typeof UMB_VARIANT_CONTEXT.TYPE;
 
 	@state()
 	private _name?: string;
@@ -53,8 +53,8 @@ export class UmbVariantSelectorElement extends UmbLitElement {
 			this._observeActiveVariants();
 		});
 		this.consumeContext(UMB_VARIANT_CONTEXT, (instance) => {
-			this.#datasetContext = instance;
-			this._observeDatasetContext();
+			this.#variantContext = instance;
+			this._observeVariantContext();
 		});
 	}
 
@@ -92,16 +92,16 @@ export class UmbVariantSelectorElement extends UmbLitElement {
 		}
 	}
 
-	private async _observeDatasetContext() {
-		if (!this.#datasetContext) return;
+	private async _observeVariantContext() {
+		if (!this.#variantContext) return;
 
-		const variantId = this.#datasetContext.getVariantId();
+		const variantId = this.#variantContext.getVariantId();
 		this._culture = variantId.culture;
 		this._segment = variantId.segment;
 		this.updateVariantDisplayName();
 
 		this.observe(
-			this.#datasetContext.name,
+			this.#variantContext.name,
 			(name) => {
 				this._name = name;
 			},
@@ -123,8 +123,8 @@ export class UmbVariantSelectorElement extends UmbLitElement {
 		if (event instanceof UUIInputEvent) {
 			const target = event.composedPath()[0] as UUIInputElement;
 
-			if (typeof target?.value === 'string' && this.#datasetContext && IsNameablePropertySetContext(this.#datasetContext)) {
-				this.#datasetContext.setName(target.value);
+			if (typeof target?.value === 'string' && this.#variantContext && isNameablePropertySetContext(this.#variantContext)) {
+				this.#variantContext.setName(target.value);
 			}
 		}
 	}
@@ -236,7 +236,6 @@ export class UmbVariantSelectorElement extends UmbLitElement {
 	}
 
 	static styles = [
-		UUITextStyles,
 		css`
 			#name-input {
 				width: 100%;

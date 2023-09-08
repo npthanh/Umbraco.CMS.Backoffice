@@ -1,11 +1,11 @@
 import { UMB_WORKSPACE_PROPERTY_CONTEXT_TOKEN } from '../../../workspace/workspace-property/workspace-property.context.js';
 import { html, customElement, property, state } from '@umbraco-cms/backoffice/external/lit';
-import { UUITextStyles } from '@umbraco-cms/backoffice/external/uui';
+import { UmbTextStyles } from "@umbraco-cms/backoffice/style";
 import { UmbVariantId } from '@umbraco-cms/backoffice/variant';
 import type { UmbRoute, UmbRouterSlotChangeEvent, UmbRouterSlotInitEvent } from '@umbraco-cms/backoffice/router';
 import { UmbPropertyEditorExtensionElement } from '@umbraco-cms/backoffice/extension-registry';
 import { UmbLitElement } from '@umbraco-cms/internal/lit-element';
-import type { UmbDataTypeConfigCollection } from '@umbraco-cms/backoffice/components';
+import type { UmbPropertyEditorConfigCollection } from '@umbraco-cms/backoffice/property-editor';
 
 /**
  * @element umb-property-editor-ui-block-grid
@@ -17,7 +17,7 @@ export class UmbPropertyEditorUIBlockGridElement extends UmbLitElement implement
 	value = '';
 
 	@property({ attribute: false })
-	public config?: UmbDataTypeConfigCollection;
+	public config?: UmbPropertyEditorConfigCollection;
 
 	@state()
 	private _routes: UmbRoute[] = [];
@@ -103,7 +103,7 @@ export class UmbPropertyEditorUIBlockGridElement extends UmbLitElement implement
 			: 'loading...';
 	}
 
-	static styles = [UUITextStyles];
+	static styles = [UmbTextStyles];
 }
 
 export default UmbPropertyEditorUIBlockGridElement;

@@ -1,5 +1,5 @@
 import { UMB_DATA_TYPE_WORKSPACE_CONTEXT } from './data-type-workspace.context.js';
-import { UUIInputElement, UUIInputEvent, UUITextStyles } from '@umbraco-cms/backoffice/external/uui';
+import { UUIInputElement, UUIInputEvent } from '@umbraco-cms/backoffice/external/uui';
 import { css, html, customElement, property, state } from '@umbraco-cms/backoffice/external/lit';
 import { UmbLitElement } from '@umbraco-cms/internal/lit-element';
 import { ManifestWorkspace } from '@umbraco-cms/backoffice/extension-registry';
@@ -23,6 +23,7 @@ export class UmbDataTypeWorkspaceEditorElement extends UmbLitElement {
 
 		this.consumeContext(UMB_DATA_TYPE_WORKSPACE_CONTEXT, (workspaceContext) => {
 			this.#workspaceContext = workspaceContext;
+			this.#workspaceContext?.createVariantContext(this);
 			this.#observeIsNew();
 			this.#observeName();
 		});
@@ -75,7 +76,6 @@ export class UmbDataTypeWorkspaceEditorElement extends UmbLitElement {
 	}
 
 	static styles = [
-		UUITextStyles,
 		css`
 			:host {
 				display: block;

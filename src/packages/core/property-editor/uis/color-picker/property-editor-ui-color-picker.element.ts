@@ -1,9 +1,9 @@
 import { html, customElement, property, state } from '@umbraco-cms/backoffice/external/lit';
-import { UUITextStyles, UUIColorSwatchesEvent } from '@umbraco-cms/backoffice/external/uui';
+import { UUIColorSwatchesEvent } from '@umbraco-cms/backoffice/external/uui';
 import { UmbPropertyEditorExtensionElement } from '@umbraco-cms/backoffice/extension-registry';
 import { UmbLitElement } from '@umbraco-cms/internal/lit-element';
 import type { UmbSwatchDetails } from '@umbraco-cms/backoffice/models';
-import type { UmbDataTypeConfigCollection } from '@umbraco-cms/backoffice/components';
+import type { UmbPropertyEditorConfigCollection } from '@umbraco-cms/backoffice/property-editor';
 
 /**
  * @element umb-property-editor-ui-color-picker
@@ -22,7 +22,7 @@ export class UmbPropertyEditorUIColorPickerElement extends UmbLitElement impleme
 	private _swatches: UmbSwatchDetails[] = [];
 
 	@property({ attribute: false })
-	public set config(config: UmbDataTypeConfigCollection | undefined) {
+	public set config(config: UmbPropertyEditorConfigCollection | undefined) {
 		this._showLabels = config?.getValueByAlias('useLabel') ?? this.#defaultShowLabels;
 		this._swatches = config?.getValueByAlias('items') ?? [];
 	}
@@ -38,8 +38,6 @@ export class UmbPropertyEditorUIColorPickerElement extends UmbLitElement impleme
 			.swatches="${this._swatches}"
 			.showLabels="${this._showLabels}"></umb-input-color>`;
 	}
-
-	static styles = [UUITextStyles];
 }
 
 export default UmbPropertyEditorUIColorPickerElement;

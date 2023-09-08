@@ -1,6 +1,5 @@
-import { UMB_DATA_TYPE_WORKSPACE_CONTEXT } from '../../../settings/data-types/workspace/data-type-workspace.context.js';
 import { html, customElement, property, state, ifDefined } from '@umbraco-cms/backoffice/external/lit';
-import { UUITextStyles } from '@umbraco-cms/backoffice/external/uui';
+import { UmbTextStyles } from "@umbraco-cms/backoffice/style";
 import {
 	PropertyEditorConfigProperty,
 } from '@umbraco-cms/backoffice/extension-registry';
@@ -16,7 +15,8 @@ import { UMB_DATA_TYPE_VARIANT_CONTEXT } from '@umbraco-cms/backoffice/data-type
 @customElement('umb-property-editor-config')
 export class UmbPropertyEditorConfigElement extends UmbLitElement {
 
-	#datasetContext?: typeof UMB_DATA_TYPE_VARIANT_CONTEXT.TYPE;
+	// TODO: Make this element generic, so its not bound to DATA-TYPEs. This will require moving some functionality of Data-Type-Context to this. and this might need to self provide a variant Context for its inner property editor UIs.
+	#variantContext?: typeof UMB_DATA_TYPE_VARIANT_CONTEXT.TYPE;
 
 	/**
 	 * Data. The element will render configuration editors with values from this data.
@@ -35,9 +35,9 @@ export class UmbPropertyEditorConfigElement extends UmbLitElement {
 	constructor() {
 		super();
 
-		this.consumeContext(UMB_DATA_TYPE_WORKSPACE_CONTEXT, (instance) => {
-			this.#datasetContext = instance.createPropertySetContext(this);
-			this.observe(this.#datasetContext.properties, (properties) => {
+		this.consumeContext(UMB_DATA_TYPE_VARIANT_CONTEXT, (instance) => {
+			this.#variantContext = instance;
+			this.observe(this.#variantContext.properties, (properties) => {
 				this._properties = properties as Array<PropertyEditorConfigProperty>;
 			}, 'observeProperties');
 		});
@@ -63,7 +63,7 @@ export class UmbPropertyEditorConfigElement extends UmbLitElement {
 		`;
 	}
 
-	static styles = [UUITextStyles];
+	static styles = [UmbTextStyles];
 }
 
 export default UmbPropertyEditorConfigElement;

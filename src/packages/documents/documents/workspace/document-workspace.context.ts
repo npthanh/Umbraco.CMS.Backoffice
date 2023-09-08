@@ -135,7 +135,7 @@ export class UmbDocumentWorkspaceContext
 		this.#currentData.update({ variants });
 	}
 
-	async propertyDataById(propertyId: string) {
+	async propertyStructureById(propertyId: string) {
 		return this.structure.propertyStructureById(propertyId);
 	}
 
@@ -208,12 +208,8 @@ export class UmbDocumentWorkspaceContext
 	}
 	*/
 
-	public createVariantPropertySetContext(host: UmbControllerHost, variantId: UmbVariantId) {
+	public createVariantContext(host: UmbControllerHost, variantId: UmbVariantId) {
 		return new UmbDocumentVariantContext(host, this, variantId);
-	}
-
-	public createDatasetContext(host: UmbControllerHost) {
-		return new UmbDocumentVariantContext(host, this, UmbVariantId.Create({}));
 	}
 
 	public destroy(): void {
