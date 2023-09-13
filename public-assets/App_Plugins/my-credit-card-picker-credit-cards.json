@@ -1,0 +1,19 @@
+{
+	"availableCards": [
+		{
+			"name": "Visa",
+			"value": "visa",
+			"cultures": ["en-us", "da-dk"]
+		},
+		{
+			"name": "Mastercard",
+			"value": "mastercard",
+			"cultures": ["en-us", "da-dk"]
+		},
+		{
+			"name": "Dankort",
+			"value": "dankort",
+			"cultures": ["da-dk"]
+		}
+	]
+}

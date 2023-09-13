@@ -55,6 +55,9 @@ export class UmbCreditCardPickerElement extends UmbElementMixin(LitElement) impl
 		/*
 		tryExecuteAndNotify(this, fetch(`/umbraco/management/api/v1/media/details/`)
 		.then((res) => res.json()))
+
+
+		fetch(`/umbraco/management/api/v1/media/details/`).then((res) => res.json())
 		*/
 
 	}
