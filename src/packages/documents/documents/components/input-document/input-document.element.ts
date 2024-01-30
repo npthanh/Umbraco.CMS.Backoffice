@@ -90,8 +90,8 @@ export class UmbInputDocumentElement extends FormControlMixin(UmbLitElement) {
 	@property({ type: Boolean })
 	showOpenButton?: boolean;
 
-	@property({ type: Boolean })
-	ignoreUserStartNodes?: boolean;
+	@property({ type: String })
+	dataTypeId?: string;
 
 	@property()
 	public set value(idsString: string) {
@@ -147,9 +147,8 @@ export class UmbInputDocumentElement extends FormControlMixin(UmbLitElement) {
 	};
 
 	#openPicker() {
-		// TODO: Configure the content picker, with `startNodeId` and `ignoreUserStartNodes` [LK]
-		console.log('_openPicker', [this.startNodeId, this.ignoreUserStartNodes]);
 		this.#pickerContext.openPicker({
+			dataTypeId: this.dataTypeId,
 			hideTreeRoot: true,
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore

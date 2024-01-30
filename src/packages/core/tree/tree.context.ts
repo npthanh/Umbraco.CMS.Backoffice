@@ -34,6 +34,8 @@ export class UmbTreeContextBase<TreeItemType extends UmbTreeItemModelBase>
 	#treeRoot = new UmbObjectState<TreeItemType | undefined>(undefined);
 	treeRoot = this.#treeRoot.asObservable();
 
+	// TODO: We don't really want `dataTypeId` here. [LK]
+	public dataTypeId?: string;
 	public repository?: UmbTreeRepository<TreeItemType>;
 	public selectableFilter?: (item: TreeItemType) => boolean = () => true;
 	public filter?: (item: TreeItemType) => boolean = () => true;
@@ -89,6 +91,7 @@ export class UmbTreeContextBase<TreeItemType extends UmbTreeItemModelBase>
 
 	public async requestTreeRoot() {
 		await this.#init;
+
 		const { data } = await this.repository!.requestTreeRoot();
 
 		if (data) {

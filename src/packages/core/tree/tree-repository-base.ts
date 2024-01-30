@@ -54,6 +54,7 @@ export abstract class UmbTreeRepositoryBase<
 	async requestRootTreeItems() {
 		await this._init;
 
+		// TODO: I really don't want to include `dataTypeId` here! [LK]
 		const { data, error } = await this.#treeSource.getRootItems();
 
 		if (data) {

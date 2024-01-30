@@ -29,8 +29,9 @@ export class UmbDocumentTreeServerDataSource extends UmbTreeServerDataSourceBase
 	}
 }
 
+// TODO: How on earth do I pass the `dataTypeId` from the client to the server? [LK]
 // eslint-disable-next-line local-rules/no-direct-api-import
-const getRootItems = () => DocumentResource.getTreeDocumentRoot({});
+const getRootItems = (dataTypeId?: string) => DocumentResource.getTreeDocumentRoot({ dataTypeId });
 
 const getChildrenOf = (parentUnique: string | null) => {
 	if (parentUnique === null) {

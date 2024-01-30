@@ -1,7 +1,8 @@
 import { html, customElement, property, state } from '@umbraco-cms/backoffice/external/lit';
 import { UmbLitElement } from '@umbraco-cms/internal/lit-element';
 import { UmbTextStyles } from '@umbraco-cms/backoffice/style';
-import { type UmbPropertyEditorConfigCollection, UmbPropertyValueChangeEvent } from '@umbraco-cms/backoffice/property-editor';
+import { UmbPropertyValueChangeEvent } from '@umbraco-cms/backoffice/property-editor';
+import type { UmbPropertyEditorConfigCollection } from '@umbraco-cms/backoffice/property-editor';
 import type { UmbPropertyEditorUiElement } from '@umbraco-cms/backoffice/extension-registry';
 import type { UmbInputTreeElement } from '@umbraco-cms/backoffice/tree';
 import type { UmbTreePickerSource } from '@umbraco-cms/backoffice/components';
@@ -9,7 +10,6 @@ import type { UmbTreePickerSource } from '@umbraco-cms/backoffice/components';
 /**
  * @element umb-property-editor-ui-tree-picker
  */
-
 @customElement('umb-property-editor-ui-tree-picker')
 export class UmbPropertyEditorUITreePickerElement extends UmbLitElement implements UmbPropertyEditorUiElement {
 	@property()
@@ -34,7 +34,7 @@ export class UmbPropertyEditorUITreePickerElement extends UmbLitElement implemen
 	showOpenButton?: boolean;
 
 	@state()
-	ignoreUserStartNodes?: boolean;
+	dataTypeId?: string;
 
 	@property({ attribute: false })
 	public set config(config: UmbPropertyEditorConfigCollection | undefined) {
@@ -49,7 +49,6 @@ export class UmbPropertyEditorUITreePickerElement extends UmbLitElement implemen
 
 		this.allowedContentTypeIds = config?.getValueByAlias('filter');
 		this.showOpenButton = config?.getValueByAlias('showOpenButton');
-		this.ignoreUserStartNodes = config?.getValueByAlias('ignoreUserStartNodes');
 	}
 
 	#onChange(e: CustomEvent) {
@@ -65,8 +64,8 @@ export class UmbPropertyEditorUITreePickerElement extends UmbLitElement implemen
 			.min=${this.min}
 			.max=${this.max}
 			.allowedContentTypeIds=${this.allowedContentTypeIds ?? ''}
+			.dataTypeId=${this.dataTypeId}
 			?showOpenButton=${this.showOpenButton}
-			?ignoreUserStartNodes=${this.ignoreUserStartNodes}
 			@change=${this.#onChange}></umb-input-tree>`;
 	}
 	static styles = [UmbTextStyles];

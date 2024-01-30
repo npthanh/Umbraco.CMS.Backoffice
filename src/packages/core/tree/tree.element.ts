@@ -56,6 +56,16 @@ export class UmbTreeElement extends UmbLitElement {
 		return this._hideTreeRoot;
 	}
 
+	// TODO: [LK] Having `dataTypeId` here doesn't feel right.
+	// I need help to understand how to pass the `dataTypeId` to the Management API.
+	@property({ type: String })
+	set dataTypeId(newVal) {
+		this.#treeContext.dataTypeId = newVal;
+	}
+	get dataTypeId() {
+		return this.#treeContext.dataTypeId;
+	}
+
 	@property()
 	set selectableFilter(newVal) {
 		this.#treeContext.selectableFilter = newVal;
@@ -79,10 +89,12 @@ export class UmbTreeElement extends UmbLitElement {
 	private _treeRoot?: UmbTreeItemModelBase;
 
 	#treeContext = new UmbTreeContextBase<UmbTreeItemModelBase>(this);
+
 	#rootItemsObserver?: UmbObserverController<Array<UmbTreeItemModelBase>>;
 
 	constructor() {
 		super();
+
 		this.#observeTreeRoot();
 	}
 

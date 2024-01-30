@@ -47,8 +47,8 @@ export class UmbInputTreeElement extends FormControlMixin(UmbLitElement) {
 	@property({ type: Boolean })
 	showOpenButton?: boolean;
 
-	@property({ type: Boolean })
-	ignoreUserStartNodes?: boolean;
+	@property({ type: String })
+	dataTypeId?: string;
 
 	@property()
 	public set value(newValue: string) {
@@ -105,10 +105,10 @@ export class UmbInputTreeElement extends FormControlMixin(UmbLitElement) {
 			.selectedIds=${this.selectedIds}
 			.startNodeId=${this.startNodeId}
 			.allowedContentTypeIds=${this._allowedContentTypeIds}
+			.dataTypeId=${this.dataTypeId}
 			.min=${this.min}
 			.max=${this.max}
 			?showOpenButton=${this.showOpenButton}
-			?ignoreUserStartNodes=${this.ignoreUserStartNodes}
 			@change=${this.#onChange}></umb-input-document>`;
 	}
 
@@ -116,10 +116,10 @@ export class UmbInputTreeElement extends FormControlMixin(UmbLitElement) {
 		return html`<umb-input-media
 			.selectedIds=${this.selectedIds}
 			.allowedContentTypeIds=${this._allowedContentTypeIds}
+			.dataTypeId=${this.dataTypeId}
 			.min=${this.min}
 			.max=${this.max}
 			?showOpenButton=${this.showOpenButton}
-			?ignoreUserStartNodes=${this.ignoreUserStartNodes}
 			@change=${this.#onChange}></umb-input-media>`;
 	}
 
@@ -130,7 +130,6 @@ export class UmbInputTreeElement extends FormControlMixin(UmbLitElement) {
 			.min=${this.min}
 			.max=${this.max}
 			?showOpenButton=${this.showOpenButton}
-			?ignoreUserStartNodes=${this.ignoreUserStartNodes}
 			@change=${this.#onChange}></umb-input-member>`;
 	}
 
