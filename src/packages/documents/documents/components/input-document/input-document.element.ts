@@ -1,4 +1,3 @@
-import type { UmbDocumentTreeItemModel } from '../../tree/types.js';
 import { UmbDocumentPickerContext } from './input-document.context.js';
 import { css, html, customElement, property, state, ifDefined, repeat } from '@umbraco-cms/backoffice/external/lit';
 import { FormControlMixin } from '@umbraco-cms/backoffice/external/uui';
@@ -82,7 +81,7 @@ export class UmbInputDocumentElement extends FormControlMixin(UmbLitElement) {
 	}
 
 	@property({ type: String })
-	startNodeId?: string;
+	rootId?: string;
 
 	@property({ type: Array })
 	allowedContentTypeIds?: string[] | undefined;
@@ -139,7 +138,7 @@ export class UmbInputDocumentElement extends FormControlMixin(UmbLitElement) {
 		return undefined;
 	}
 
-	#pickableFilter: (item: UmbDocumentTreeItemModel) => boolean = (item) => {
+	#pickableFilter: (item: UmbDocumentItemModel) => boolean = (item) => {
 		if (this.allowedContentTypeIds && this.allowedContentTypeIds.length > 0) {
 			return this.allowedContentTypeIds.includes(item.documentType.unique);
 		}
@@ -147,13 +146,10 @@ export class UmbInputDocumentElement extends FormControlMixin(UmbLitElement) {
 	};
 
 	#openPicker() {
-		// TODO: Configure the content picker, with `startNodeId` and `ignoreUserStartNodes` [LK]
-		console.log('_openPicker', [this.startNodeId, this.ignoreUserStartNodes]);
 		this.#pickerContext.openPicker({
 			hideTreeRoot: true,
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
 			pickableFilter: this.#pickableFilter,
+			rootId: this.rootId ? [this.rootId] : undefined,
 		});
 	}
 

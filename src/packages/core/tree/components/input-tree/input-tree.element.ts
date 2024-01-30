@@ -27,7 +27,7 @@ export class UmbInputTreeElement extends FormControlMixin(UmbLitElement) {
 	}
 
 	@property({ type: String })
-	startNodeId?: string;
+	rootId?: string;
 
 	@property({ type: Number })
 	min = 0;
@@ -103,7 +103,7 @@ export class UmbInputTreeElement extends FormControlMixin(UmbLitElement) {
 	#renderContentPicker() {
 		return html`<umb-input-document
 			.selectedIds=${this.selectedIds}
-			.startNodeId=${this.startNodeId}
+			.rootId=${this.rootId}
 			.allowedContentTypeIds=${this._allowedContentTypeIds}
 			.min=${this.min}
 			.max=${this.max}

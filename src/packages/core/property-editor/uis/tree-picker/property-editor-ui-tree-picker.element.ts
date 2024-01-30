@@ -19,7 +19,7 @@ export class UmbPropertyEditorUITreePickerElement extends UmbLitElement implemen
 	type?: UmbTreePickerSource['type'];
 
 	@state()
-	startNodeId?: string | null;
+	rootId?: string | null;
 
 	@state()
 	min = 0;
@@ -41,7 +41,7 @@ export class UmbPropertyEditorUITreePickerElement extends UmbLitElement implemen
 		const startNode: UmbTreePickerSource | undefined = config?.getValueByAlias('startNode');
 		if (startNode) {
 			this.type = startNode.type;
-			this.startNodeId = startNode.id;
+			this.rootId = startNode.id;
 		}
 
 		this.min = Number(config?.getValueByAlias('minNumber')) || 0;
@@ -61,7 +61,7 @@ export class UmbPropertyEditorUITreePickerElement extends UmbLitElement implemen
 		return html`<umb-input-tree
 			.value=${this.value}
 			.type=${this.type}
-			.startNodeId=${this.startNodeId ?? ''}
+			.rootId=${this.rootId ?? ''}
 			.min=${this.min}
 			.max=${this.max}
 			.allowedContentTypeIds=${this.allowedContentTypeIds ?? ''}

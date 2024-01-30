@@ -44,6 +44,7 @@ export class UmbTreePickerModalElement<TreeItemType extends UmbTreeItemModelBase
 					<umb-tree
 						?hide-tree-root=${this.data?.hideTreeRoot}
 						alias=${ifDefined(this.data?.treeAlias)}
+						.rootId=${this.data?.rootId ?? []}
 						@selection-change=${this.#onSelectionChange}
 						.selectionConfiguration=${this._selectionConfiguration}
 						.filter=${this.data?.filter}

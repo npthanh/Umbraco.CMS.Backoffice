@@ -41,11 +41,13 @@ export class UmbTreeElement extends UmbLitElement {
 	}
 
 	// TODO: what is the best name for this functionality?
-	private _hideTreeRoot = false;
+	#hideTreeRoot = false;
 	@property({ type: Boolean, attribute: 'hide-tree-root' })
 	set hideTreeRoot(newVal: boolean) {
-		const oldVal = this._hideTreeRoot;
-		this._hideTreeRoot = newVal;
+		const oldVal = this.#hideTreeRoot;
+
+		this.#hideTreeRoot = newVal;
+
 		if (newVal === true) {
 			this.#observeRootItems();
 		}
@@ -53,7 +55,7 @@ export class UmbTreeElement extends UmbLitElement {
 		this.requestUpdate('hideTreeRoot', oldVal);
 	}
 	get hideTreeRoot() {
-		return this._hideTreeRoot;
+		return this.#hideTreeRoot;
 	}
 
 	@property()
@@ -70,6 +72,14 @@ export class UmbTreeElement extends UmbLitElement {
 	}
 	get filter() {
 		return this.#treeContext.filter;
+	}
+
+	@property({ attribute: false })
+	set rootId(newVal: string[]) {
+		this.#treeContext.rootId = newVal;
+	}
+	get rootId() {
+		return this.#treeContext.rootId ?? [];
 	}
 
 	@state()
@@ -90,6 +100,13 @@ export class UmbTreeElement extends UmbLitElement {
 		this.observe(
 			this.#treeContext.treeRoot,
 			(treeRoot) => {
+
+				// TODO: [LK] Wondering what should happen here. if a `rootId` is specified, then what?
+				// Should we still have a "Documents" container folder?
+				if (treeRoot?.name === 'Documents' && this.#treeContext.rootId) {
+					console.log('observe.treeRoot', treeRoot, this.#treeContext.rootId);
+				}
+
 				this._treeRoot = treeRoot;
 			},
 			'umbTreeRootObserver',
@@ -100,10 +117,14 @@ export class UmbTreeElement extends UmbLitElement {
 		if (!this.#treeContext?.requestRootItems) throw new Error('Tree does not support root items');
 		this.#rootItemsObserver?.destroy();
 
+		// TODO: [LK] If `rootId` is set, then should we do a `this.#treeContext.requestChildrenOf` here?
+
 		const { asObservable } = await this.#treeContext.requestRootItems();
 
 		if (asObservable) {
 			this.#rootItemsObserver = this.observe(asObservable(), (rootItems) => {
+				console.log('observe.rootItems', rootItems);
+
 				const oldValue = this._items;
 				this._items = rootItems;
 				this.requestUpdate('_items', oldValue);
@@ -116,11 +137,14 @@ export class UmbTreeElement extends UmbLitElement {
 	}
 
 	render() {
-		return html` ${this.#renderTreeRoot()} ${this.#renderRootItems()}`;
+		if (!this.hideTreeRoot && this._treeRoot) {
+			return this.#renderTreeRoot();
+		} else {
+			return this.#renderRootItems();
+		}
 	}
 
 	#renderTreeRoot() {
-		if (this.hideTreeRoot || this._treeRoot === undefined) return nothing;
 		return html` <umb-tree-item-default .item=${this._treeRoot}></umb-tree-item-default> `;
 	}
 
