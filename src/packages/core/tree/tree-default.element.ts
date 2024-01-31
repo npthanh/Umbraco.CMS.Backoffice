@@ -159,11 +159,8 @@ export class UmbTreeDefaultElement extends UmbLitElement {
 	}
 
 	#renderTreeRoot() {
-		console.log('UmbTreeDefaultElement.#renderTreeRoot', this.hideTreeRoot, this._treeRoot);
 		if (this.hideTreeRoot || this._treeRoot === undefined) return nothing;
-		return html`<h2>hiya</h2>
-			<umb-tree-item-default .item=${this._treeRoot}></umb-tree-item-default>
-			<h2>bye</h2>`;
+		return html`<umb-tree-item-default .item=${this._treeRoot}></umb-tree-item-default>`;
 	}
 
 	#renderRootItems() {
