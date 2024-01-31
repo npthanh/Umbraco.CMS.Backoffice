@@ -187,6 +187,8 @@ export class UmbTreeDefaultElement extends UmbLitElement {
 	}
 }
 
+export default UmbTreeDefaultElement;
+
 declare global {
 	interface HTMLElementTagNameMap {
 		'umb-tree-default': UmbTreeDefaultElement;

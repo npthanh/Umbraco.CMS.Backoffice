@@ -190,3 +190,5 @@ export class UmbTreeDefaultContext<TreeItemType extends UmbTreeItemModelBase>
 		super.destroy();
 	}
 }
+
+export default UmbTreeDefaultContext;
