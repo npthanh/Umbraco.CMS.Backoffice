@@ -29,6 +29,7 @@ const treeStore: ManifestTreeStore = {
 
 const tree: ManifestTree = {
 	type: 'tree',
+	kind: 'default',
 	alias: UMB_MEMBER_GROUP_TREE_ALIAS,
 	name: 'MemberGroup Tree',
 	meta: {

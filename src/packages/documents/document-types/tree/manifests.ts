@@ -34,10 +34,9 @@ const treeStore: ManifestTreeStore = {
 
 const tree: ManifestTree = {
 	type: 'tree',
+	kind: 'default',
 	alias: UMB_DOCUMENT_TYPE_TREE_ALIAS,
 	name: 'Document Type Tree',
-	element: () => import('../../../core/tree/tree-default.element.js'),
-	api: () => import('../../../core/tree/tree-default.context.js'),
 	meta: {
 		repositoryAlias: UMB_DOCUMENT_TYPE_TREE_REPOSITORY_ALIAS,
 	},
