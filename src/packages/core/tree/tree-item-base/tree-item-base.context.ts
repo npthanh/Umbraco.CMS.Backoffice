@@ -1,5 +1,5 @@
 import type { UmbTreeItemContext } from '../tree-item-default/tree-item.context.interface.js';
-import type { UmbTreeContextBase } from '../tree.context.js';
+import type { UmbTreeDefaultContext } from '../tree-default.context.js';
 import type { UmbTreeItemModelBase } from '../types.js';
 import { map } from '@umbraco-cms/backoffice/external/rxjs';
 import { UMB_SECTION_CONTEXT, UMB_SECTION_SIDEBAR_CONTEXT } from '@umbraco-cms/backoffice/section';
@@ -52,7 +52,7 @@ export class UmbTreeItemContextBase<TreeItemType extends UmbTreeItemModelBase>
 	#path = new UmbStringState('');
 	path = this.#path.asObservable();
 
-	treeContext?: UmbTreeContextBase<TreeItemType>;
+	treeContext?: UmbTreeDefaultContext<TreeItemType>;
 	#sectionContext?: UmbSectionContext;
 	#sectionSidebarContext?: UmbSectionSidebarContext;
 	#actionEventContext?: UmbActionEventContext;
@@ -127,7 +127,7 @@ export class UmbTreeItemContextBase<TreeItemType extends UmbTreeItemModelBase>
 			this.#sectionSidebarContext = instance;
 		});
 
-		this.consumeContext('umbTreeContext', (treeContext: UmbTreeContextBase<TreeItemType>) => {
+		this.consumeContext('umbTreeContext', (treeContext: UmbTreeDefaultContext<TreeItemType>) => {
 			this.treeContext = treeContext;
 			this.#observeIsSelectable();
 			this.#observeIsSelected();

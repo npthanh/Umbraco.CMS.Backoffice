@@ -1,4 +1,4 @@
-import type { UmbTreeContextBase } from './tree.context.js';
+import type { UmbTreeDefaultContext } from './tree-default.context.js';
 import type { UmbTreeItemModelBase } from './types.js';
 import { html, nothing, customElement, property, state, repeat } from '@umbraco-cms/backoffice/external/lit';
 import { UmbLitElement } from '@umbraco-cms/internal/lit-element';
@@ -45,8 +45,8 @@ export class UmbTreeDefaultElement extends UmbLitElement {
 	@property({ type: Boolean, attribute: 'hide-tree-root' })
 	set hideTreeRoot(newVal: boolean) {
 		const oldVal = this._hideTreeRoot;
-console.log('UmbTreeDefaultElement.hideTreeRoot', [this.alias, oldVal, newVal]);
-debugger;
+		console.log('UmbTreeDefaultElement.hideTreeRoot', [this.alias, oldVal, newVal]);
+		debugger;
 		this._hideTreeRoot = newVal;
 
 		if (newVal === true) {
@@ -97,7 +97,7 @@ debugger;
 	private _treeRoot?: UmbTreeItemModelBase;
 
 	//#treeContext = new UmbTreeContextBase<UmbTreeItemModelBase>(this);
-	protected _treeContext?: UmbTreeContextBase<UmbTreeItemModelBase>;
+	protected _treeContext?: UmbTreeDefaultContext<UmbTreeItemModelBase>;
 
 	#rootItemsObserver?: UmbObserverController<Array<UmbTreeItemModelBase>>;
 
@@ -108,8 +108,7 @@ debugger;
 		console.log('UmbTreeDefaultElement.constructor');
 
 		this._init = Promise.all([
-			( )=> { console.log("UmbTreeDefaultElement._init")},
-			this.consumeContext('umbTreeContext', (context: UmbTreeContextBase<UmbTreeItemModelBase>) => {
+			this.consumeContext('umbTreeContext', (context: UmbTreeDefaultContext<UmbTreeItemModelBase>) => {
 				console.log('UmbTreeDefaultElement.consumeContext.umbTreeContext', context);
 				debugger;
 				this._treeContext = context;
@@ -122,9 +121,7 @@ debugger;
 	}
 
 	firstUpdated() {
-		console.log('UmbTreeDefaultElement.firstUpdated',this._hideTreeRoot);
-		//await this._init();
-debugger;
+		console.log('UmbTreeDefaultElement.firstUpdated', this._hideTreeRoot);
 		if (this._hideTreeRoot === true) {
 			this._observeRootItems();
 		} else {
@@ -172,7 +169,9 @@ debugger;
 	#renderTreeRoot() {
 		console.log('UmbTreeDefaultElement.#renderTreeRoot', this.hideTreeRoot, this._treeRoot);
 		if (this.hideTreeRoot || this._treeRoot === undefined) return nothing;
-		return html`<h2>hiya</h2> <umb-tree-item-default .item=${this._treeRoot}></umb-tree-item-default> <h2>bye</h2>`;
+		return html`<h2>hiya</h2>
+			<umb-tree-item-default .item=${this._treeRoot}></umb-tree-item-default>
+			<h2>bye</h2>`;
 	}
 
 	#renderRootItems() {

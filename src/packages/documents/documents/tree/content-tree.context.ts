@@ -1,7 +1,7 @@
 import type { UmbControllerHostElement } from '@umbraco-cms/backoffice/controller-api';
-import { UmbTreeContextBase } from '@umbraco-cms/backoffice/tree';
+import { UmbTreeDefaultContext } from '@umbraco-cms/backoffice/tree';
 
-export class UmbContentTreeContext extends UmbTreeContextBase<any> {
+export class UmbContentTreeContext extends UmbTreeDefaultContext<any> {
 	constructor(host: UmbControllerHostElement) {
 		super(host);
 	}

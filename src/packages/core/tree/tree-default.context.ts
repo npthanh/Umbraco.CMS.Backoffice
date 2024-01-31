@@ -18,7 +18,8 @@ import type { UmbEntityActionEvent } from '@umbraco-cms/backoffice/entity-action
 import { UmbObjectState } from '@umbraco-cms/backoffice/observable-api';
 
 // TODO: update interface
-export interface UmbTreeContext<TreeItemType extends UmbTreeItemModelBase> extends UmbContextBase<UmbTreeContext<TreeItemType>> {
+export interface UmbTreeContext<TreeItemType extends UmbTreeItemModelBase>
+	extends UmbContextBase<UmbTreeContext<TreeItemType>> {
 	selection: UmbSelectionManager;
 	requestChildrenOf: (parentUnique: string | null) => Promise<{
 		data?: UmbPagedModel<TreeItemType>;
@@ -27,8 +28,8 @@ export interface UmbTreeContext<TreeItemType extends UmbTreeItemModelBase> exten
 	}>;
 }
 
-export class UmbTreeContextBase<TreeItemType extends UmbTreeItemModelBase>
-	extends UmbContextBase<UmbTreeContextBase<TreeItemType>>
+export class UmbTreeDefaultContext<TreeItemType extends UmbTreeItemModelBase>
+	extends UmbContextBase<UmbTreeDefaultContext<TreeItemType>>
 	implements UmbTreeContext<TreeItemType>
 {
 	#treeRoot = new UmbObjectState<TreeItemType | undefined>(undefined);
