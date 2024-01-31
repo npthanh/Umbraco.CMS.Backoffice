@@ -9,7 +9,7 @@ import {
 	type ManifestTree,
 	umbExtensionsRegistry,
 } from '@umbraco-cms/backoffice/extension-registry';
-import { UmbBaseController } from '@umbraco-cms/backoffice/class-api';
+import { UmbContextBase } from '@umbraco-cms/backoffice/class-api';
 import type { UmbControllerHostElement } from '@umbraco-cms/backoffice/controller-api';
 import { UmbExtensionApiInitializer } from '@umbraco-cms/backoffice/extension-api';
 import type { ProblemDetails } from '@umbraco-cms/backoffice/backend-api';
@@ -18,7 +18,7 @@ import type { UmbEntityActionEvent } from '@umbraco-cms/backoffice/entity-action
 import { UmbObjectState } from '@umbraco-cms/backoffice/observable-api';
 
 // TODO: update interface
-export interface UmbTreeContext<TreeItemType extends UmbTreeItemModelBase> extends UmbBaseController {
+export interface UmbTreeContext<TreeItemType extends UmbTreeItemModelBase> extends UmbContextBase<UmbTreeContext<TreeItemType>> {
 	selection: UmbSelectionManager;
 	requestChildrenOf: (parentUnique: string | null) => Promise<{
 		data?: UmbPagedModel<TreeItemType>;
@@ -28,14 +28,14 @@ export interface UmbTreeContext<TreeItemType extends UmbTreeItemModelBase> exten
 }
 
 export class UmbTreeContextBase<TreeItemType extends UmbTreeItemModelBase>
-	extends UmbBaseController
+	extends UmbContextBase<UmbTreeContextBase<TreeItemType>>
 	implements UmbTreeContext<TreeItemType>
 {
 	#treeRoot = new UmbObjectState<TreeItemType | undefined>(undefined);
 	treeRoot = this.#treeRoot.asObservable();
 
 	// TODO: We don't really want `dataTypeId` here. [LK]
-	public dataTypeId?: string;
+	//public dataTypeId?: string;
 	public repository?: UmbTreeRepository<TreeItemType>;
 	public selectableFilter?: (item: TreeItemType) => boolean = () => true;
 	public filter?: (item: TreeItemType) => boolean = () => true;
@@ -47,13 +47,14 @@ export class UmbTreeContextBase<TreeItemType extends UmbTreeItemModelBase>
 	#initResolver?: () => void;
 	#initialized = false;
 
-	#init = new Promise<void>((resolve) => {
+	protected _init = new Promise<void>((resolve) => {
 		this.#initialized ? resolve() : (this.#initResolver = resolve);
 	});
 
 	constructor(host: UmbControllerHostElement) {
-		super(host);
-		this.provideContext('umbTreeContext', this);
+		super(host, 'umbTreeContext');
+
+		//debugger;
 
 		this.consumeContext(UMB_ACTION_EVENT_CONTEXT, (instance) => {
 			this.#actionEventContext = instance;
@@ -82,7 +83,7 @@ export class UmbTreeContextBase<TreeItemType extends UmbTreeItemModelBase>
 		if (this.#treeAlias === treeAlias) return;
 		this.#treeAlias = treeAlias;
 
-		this.#observeTreeManifest();
+		//this.#observeTreeManifest();
 	}
 
 	public getTreeAlias() {
@@ -90,7 +91,7 @@ export class UmbTreeContextBase<TreeItemType extends UmbTreeItemModelBase>
 	}
 
 	public async requestTreeRoot() {
-		await this.#init;
+		await this._init;
 
 		const { data } = await this.repository!.requestTreeRoot();
 
@@ -102,40 +103,55 @@ export class UmbTreeContextBase<TreeItemType extends UmbTreeItemModelBase>
 	}
 
 	public async requestRootItems() {
-		console.log('requestRootItems', this.dataTypeId);
+		//console.log('requestRootItems', this.dataTypeId);
 		//debugger;
-		await this.#init;
-		return this.repository!.requestRootTreeItems({ dataTypeId: this.dataTypeId });
+		await this._init;
+		return this.repository!.requestRootTreeItems({});
 	}
 
 	public async requestChildrenOf(parentUnique: string | null) {
-		await this.#init;
+		await this._init;
 		if (parentUnique === undefined) throw new Error('Parent unique cannot be undefined.');
-		return this.repository!.requestTreeItemsOf(parentUnique, { dataTypeId: this.dataTypeId  });
+		return this.repository!.requestTreeItemsOf(parentUnique, {});
 	}
 
 	public async rootItems() {
-		await this.#init;
+		await this._init;
 		return this.repository!.rootTreeItems();
 	}
 
 	public async childrenOf(parentUnique: string | null) {
-		await this.#init;
+		await this._init;
 		return this.repository!.treeItemsOf(parentUnique);
 	}
 
-	#observeTreeManifest() {
-		if (this.#treeAlias) {
-			this.observe(
-				umbExtensionsRegistry.getByTypeAndAlias('tree', this.#treeAlias),
-				async (treeManifest) => {
-					if (!treeManifest) return;
-					this.#observeRepository(treeManifest);
-				},
-				'_observeTreeManifest',
-			);
-		}
+	#manifest?: ManifestTree;
+
+	public setManifest(manifest: ManifestTree | undefined) {
+		//debugger;
+		if (this.#manifest === manifest) return;
+		this.#manifest = manifest;
+
+		if (!this.#manifest) return;
+		this.#observeRepository(this.#manifest);
 	}
+
+	public getManifest() {
+		return this.#manifest;
+	}
+
+	// #observeTreeManifest() {
+	// 	if (this.#treeAlias) {
+	// 		this.observe(
+	// 			umbExtensionsRegistry.getByTypeAndAlias('tree', this.#treeAlias),
+	// 			async (treeManifest) => {
+	// 				if (!treeManifest) return;
+	// 				this.#observeRepository(treeManifest);
+	// 			},
+	// 			'_observeTreeManifest',
+	// 		);
+	// 	}
+	// }
 
 	#observeRepository(treeManifest: ManifestTree) {
 		const repositoryAlias = treeManifest.meta.repositoryAlias;
@@ -149,6 +165,7 @@ export class UmbTreeContextBase<TreeItemType extends UmbTreeItemModelBase>
 			(permitted, ctrl) => {
 				this.repository = permitted ? ctrl.api : undefined;
 				this.#checkIfInitialized();
+				//debugger;
 			},
 		);
 	}

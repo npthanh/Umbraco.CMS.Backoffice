@@ -4,6 +4,7 @@ import type { UmbTreePickerModalData, UmbPickerModalValue } from '@umbraco-cms/b
 import { UmbModalBaseElement } from '@umbraco-cms/backoffice/modal';
 import { UmbSelectionChangeEvent } from '@umbraco-cms/backoffice/event';
 import type { UmbTreeElement, UmbTreeItemModelBase, UmbTreeSelectionConfiguration } from '@umbraco-cms/backoffice/tree';
+import type { ManifestTree } from '@umbraco-cms/backoffice/extension-registry';
 
 @customElement('umb-tree-picker-modal')
 export class UmbTreePickerModalElement<TreeItemType extends UmbTreeItemModelBase> extends UmbModalBaseElement<
@@ -38,19 +39,24 @@ export class UmbTreePickerModalElement<TreeItemType extends UmbTreeItemModelBase
 	}
 
 	render() {
-		console.log('render', this.data?.dataTypeId);
+		//console.log('render', this.data?.dataTypeId);
 		//debugger;
 		return html`
 			<umb-body-layout headline="Select">
 				<uui-box>
+
 					<umb-tree
-						?hide-tree-root=${this.data?.hideTreeRoot}
-						alias=${ifDefined(this.data?.treeAlias)}
-						.dataTypeId=${this.data?.dataTypeId}
-						@selection-change=${this.#onSelectionChange}
-						.selectionConfiguration=${this._selectionConfiguration}
-						.filter=${this.data?.filter}
-						.selectableFilter=${this.data?.pickableFilter}></umb-tree>
+					.alias=${this.data?.treeAlias}
+					.props=${{
+						hideTreeRoot: this.data?.hideTreeRoot,
+						alias: this.data?.treeAlias,
+						dataTypeId: this.data?.dataTypeId,
+						//selectionChange: this.#onSelectionChange,
+						selectionConfiguration: this._selectionConfiguration,
+						filter: this.data?.filter,
+						selectableFilter: this.data?.pickableFilter
+					}}></umb-tree>
+
 				</uui-box>
 				<div slot="actions">
 					<uui-button label=${this.localize.term('general_close')} @click=${this._rejectModal}></uui-button>

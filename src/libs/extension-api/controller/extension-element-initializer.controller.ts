@@ -50,6 +50,7 @@ export class UmbExtensionElementInitializer<
 		return this.#properties;
 	}
 	set properties(newVal) {
+		//debugger;
 		this.#properties = newVal;
 		// TODO: we could optimize this so we only re-set the changed props.
 		this.#assignProperties();
@@ -68,6 +69,7 @@ export class UmbExtensionElementInitializer<
 	}
 
 	#assignProperties = () => {
+		//debugger;
 		if (!this.#component || !this.#properties) return;
 
 		// TODO: we could optimize this so we only re-set the updated props.

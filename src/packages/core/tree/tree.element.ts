@@ -1,157 +1,108 @@
-import { UmbTreeContextBase } from './tree.context.js';
-import type { UmbTreeItemModelBase } from './types.js';
-import { html, nothing, customElement, property, state, repeat } from '@umbraco-cms/backoffice/external/lit';
+import { customElement, html, property, state } from '@umbraco-cms/backoffice/external/lit';
 import { UmbLitElement } from '@umbraco-cms/internal/lit-element';
-import type { UmbObserverController } from '@umbraco-cms/backoffice/observable-api';
-
-import './tree-item-default/tree-item.element.js';
-import './tree-item-base/tree-item-base.element.js';
-
-export type UmbTreeSelectionConfiguration = {
-	multiple?: boolean;
-	selectable?: boolean;
-	selection?: Array<string | null>;
-};
+import type { ManifestTree } from '@umbraco-cms/backoffice/extension-registry';
+import { umbExtensionsRegistry } from '@umbraco-cms/backoffice/extension-registry';
+import {
+	UmbExtensionElementInitializer,
+	createExtensionApi,
+	createExtensionElement,
+} from '@umbraco-cms/backoffice/extension-api';
 
 @customElement('umb-tree')
 export class UmbTreeElement extends UmbLitElement {
+	_alias?: string;
 	@property({ type: String, reflect: true })
-	set alias(newVal) {
-		this.#treeContext.setTreeAlias(newVal);
-	}
 	get alias() {
-		return this.#treeContext.getTreeAlias();
+		return this._alias;
+	}
+	set alias(newVal) {
+		this._alias = newVal;
+		this.#observeManifest();
 	}
 
-	private _selectionConfiguration: UmbTreeSelectionConfiguration = {
-		multiple: false,
-		selectable: true,
-		selection: [],
+	@property({ type: Object, attribute: false })
+	get props() {
+		return this.#props;
+	}
+	set props(newVal: Record<string, unknown> | undefined) {
+		// TODO, compare changes since last time. only reset the ones that changed. This might be better done by the controller is self:
+		debugger;
+		this.#props = newVal;
+		if (this.#extensionsController) {
+			this.#extensionsController.properties = newVal;
+		}
+		this.#observeManifest();
+	}
+	#props?: Record<string, unknown> = {};
+
+	#extensionsController?: UmbExtensionElementInitializer<ManifestTree>;
+
+	@state()
+	_element: HTMLElement | undefined;
+
+	#manifest?: ManifestTree;
+
+	#observeManifest() {
+		debugger;
+		if (this._alias && this.props) {
+			this.observe(
+				umbExtensionsRegistry.byTypeAndAlias('tree', this._alias),
+				async (manifest) => {
+					if (!manifest) return;
+					this.#manifest = manifest;
+					this.#createApi();
+					this.#createElement();
+				},
+				'umbObserveTreeManifest',
+			);
+		}
+	}
+
+	async #createApi() {
+		if (!this.#manifest) throw new Error('No manifest');
+		const api = (await createExtensionApi(this.#manifest, [this])) as unknown as any;
+		if (!api) throw new Error('No api');
+		api.setManifest(this.#manifest);
+	}
+
+	async #createElement() {
+		if (!this.#manifest) throw new Error('No manifest');
+
+		this.#createController();
+
+		//this._element = await createExtensionElement(this.#manifest);
+		//this.requestUpdate();
+	}
+
+	#createController() {
+		debugger;
+
+		if (!this.#manifest) throw new Error('No manifest');
+
+		const extController = new UmbExtensionElementInitializer<ManifestTree>(
+			this,
+			umbExtensionsRegistry,
+			this.#manifest.alias,
+			this.#extensionChanged,
+			'umb-tree-default',
+		) as any;
+
+		extController.properties = this.#props;
+
+		this.#extensionsController = extController;
+
+		//return extController;
+	}
+
+	#extensionChanged = (isPermitted: boolean, controller: UmbExtensionElementInitializer<ManifestTree>) => {
+		console.log('LK.extensionChanged', [isPermitted, controller]);
+		debugger;
+		this._element = controller.component;
+		this.requestUpdate('_element');
 	};
 
-	@property({ type: Object })
-	set selectionConfiguration(config: UmbTreeSelectionConfiguration) {
-		this._selectionConfiguration = config;
-		this.#treeContext.selection.setMultiple(config.multiple ?? false);
-		this.#treeContext.selection.setSelectable(config.selectable ?? true);
-		this.#treeContext.selection.setSelection(config.selection ?? []);
-	}
-	get selectionConfiguration(): UmbTreeSelectionConfiguration {
-		return this._selectionConfiguration;
-	}
-
-	// TODO: what is the best name for this functionality?
-	private _hideTreeRoot = false;
-	@property({ type: Boolean, attribute: 'hide-tree-root' })
-	set hideTreeRoot(newVal: boolean) {
-		//const oldVal = this._hideTreeRoot;
-		this._hideTreeRoot = newVal;
-		// if (newVal === true) {
-		// 	this.#observeRootItems();
-		// }
-		//this.requestUpdate('hideTreeRoot', oldVal);
-	}
-	get hideTreeRoot() {
-		return this._hideTreeRoot;
-	}
-
-	firstUpdated() {
-		if (this._hideTreeRoot) {
-			this.#observeRootItems();
-		}
-	}
-
-	// TODO: [LK] Having `dataTypeId` here doesn't feel right.
-	// I need help to understand how to pass the `dataTypeId` to the Management API.
-	@property({ type: String })
-	set dataTypeId(newVal) {
-		debugger;
-		this.#treeContext.dataTypeId = newVal;
-	}
-	get dataTypeId() {
-		return this.#treeContext.dataTypeId;
-	}
-
-	@property()
-	set selectableFilter(newVal) {
-		this.#treeContext.selectableFilter = newVal;
-	}
-	get selectableFilter() {
-		return this.#treeContext.selectableFilter;
-	}
-
-	@property()
-	set filter(newVal) {
-		this.#treeContext.filter = newVal;
-	}
-	get filter() {
-		return this.#treeContext.filter;
-	}
-
-	@state()
-	private _items: UmbTreeItemModelBase[] = [];
-
-	@state()
-	private _treeRoot?: UmbTreeItemModelBase;
-
-	#treeContext = new UmbTreeContextBase<UmbTreeItemModelBase>(this);
-
-	#rootItemsObserver?: UmbObserverController<Array<UmbTreeItemModelBase>>;
-
-	constructor() {
-		super();
-
-		this.#observeTreeRoot();
-	}
-
-	#observeTreeRoot() {
-		this.observe(
-			this.#treeContext.treeRoot,
-			(treeRoot) => {
-				this._treeRoot = treeRoot;
-			},
-			'umbTreeRootObserver',
-		);
-	}
-
-	async #observeRootItems() {
-		if (!this.#treeContext?.requestRootItems) throw new Error('Tree does not support root items');
-		this.#rootItemsObserver?.destroy();
-
-		const { asObservable } = await this.#treeContext.requestRootItems();
-
-		if (asObservable) {
-			this.#rootItemsObserver = this.observe(asObservable(), (rootItems) => {
-				const oldValue = this._items;
-				this._items = rootItems;
-				this.requestUpdate('_items', oldValue);
-			});
-		}
-	}
-
-	getSelection() {
-		return this.#treeContext.selection.getSelection();
-	}
-
 	render() {
-		return html` ${this.#renderTreeRoot()} ${this.#renderRootItems()}`;
-	}
-
-	#renderTreeRoot() {
-		if (this.hideTreeRoot || this._treeRoot === undefined) return nothing;
-		return html` <umb-tree-item-default .item=${this._treeRoot}></umb-tree-item-default> `;
-	}
-
-	#renderRootItems() {
-		if (this._items?.length === 0) return nothing;
-		return html`
-			${repeat(
-				this._items,
-				// TODO: use unique here:
-				(item, index) => item.name + '___' + index,
-				(item) => html`<umb-tree-item-default .item=${item}></umb-tree-item-default>`,
-			)}
-		`;
+		return html`${this._element}`;
 	}
 }
 

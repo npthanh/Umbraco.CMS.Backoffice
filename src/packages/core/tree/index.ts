@@ -6,6 +6,7 @@ export * from './tree-item-base/index.js';
 export * from './tree-menu-item-default/index.js';
 export * from './tree.context.js';
 export * from './tree.element.js';
+export * from './tree-default.element.js';
 export * from './types.js';
 export * from './tree-repository.interface.js';
 export * from './tree-store.interface.js';
