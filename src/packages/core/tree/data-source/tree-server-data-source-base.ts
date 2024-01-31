@@ -9,8 +9,9 @@ export interface UmbTreeServerDataSourceBaseArgs<
 	ServerTreeItemType extends TreeItemPresentationModel,
 	ClientTreeItemType extends UmbTreeItemModelBase,
 > {
-	getRootItems: () => Promise<UmbPagedModel<ServerTreeItemType>>;
-	getChildrenOf: (parentUnique: string | null) => Promise<UmbPagedModel<ServerTreeItemType>>;
+	// TODO: Use generic type parameters for these methods. [LK]
+	getRootItems: (args: any) => Promise<UmbPagedModel<ServerTreeItemType>>;
+	getChildrenOf: (parentUnique: string | null, args: any) => Promise<UmbPagedModel<ServerTreeItemType>>;
 	mapper: (item: ServerTreeItemType) => ClientTreeItemType;
 }
 
@@ -47,9 +48,9 @@ export abstract class UmbTreeServerDataSourceBase<
 	 * @return {*}
 	 * @memberof UmbTreeServerDataSourceBase
 	 */
-	async getRootItems() {
-		const { data, error } = await tryExecuteAndNotify(this.#host, this.#getRootItems());
-
+	async getRootItems(args: any) {
+		//debugger;
+		const { data, error } = await tryExecuteAndNotify(this.#host, this.#getRootItems(args));
 		if (data) {
 			const items = data?.items.map((item) => this.#mapper(item));
 			return { data: { total: data.total, items } };
@@ -64,10 +65,11 @@ export abstract class UmbTreeServerDataSourceBase<
 	 * @return {*}
 	 * @memberof UmbTreeServerDataSourceBase
 	 */
-	async getChildrenOf(parentUnique: string | null) {
+	async getChildrenOf(parentUnique: string | null, args: any) {
+		//debugger;
 		if (parentUnique === undefined) throw new Error('Parent unique is missing');
 
-		const { data, error } = await tryExecuteAndNotify(this.#host, this.#getChildrenOf(parentUnique));
+		const { data, error } = await tryExecuteAndNotify(this.#host, this.#getChildrenOf(parentUnique, args));
 
 		if (data) {
 			const items = data?.items.map((item: ServerTreeItemType) => this.#mapper(item));

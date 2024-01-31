@@ -7,6 +7,7 @@ export interface UmbTreeDataSourceConstructor<TreeItemType extends UmbTreeItemMo
 }
 
 export interface UmbTreeDataSource<TreeItemType extends UmbTreeItemModelBase> {
-	getRootItems(): Promise<DataSourceResponse<UmbPagedModel<TreeItemType>>>;
-	getChildrenOf(parentUnique: string | null): Promise<DataSourceResponse<UmbPagedModel<TreeItemType>>>;
+	// TODO: Use generic type parameters for these methods. [LK]
+	getRootItems(args: any): Promise<DataSourceResponse<UmbPagedModel<TreeItemType>>>;
+	getChildrenOf(parentUnique: string | null, args: any): Promise<DataSourceResponse<UmbPagedModel<TreeItemType>>>;
 }

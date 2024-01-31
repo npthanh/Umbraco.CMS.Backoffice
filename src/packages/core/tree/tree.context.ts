@@ -102,14 +102,16 @@ export class UmbTreeContextBase<TreeItemType extends UmbTreeItemModelBase>
 	}
 
 	public async requestRootItems() {
+		console.log('requestRootItems', this.dataTypeId);
+		//debugger;
 		await this.#init;
-		return this.repository!.requestRootTreeItems();
+		return this.repository!.requestRootTreeItems({ dataTypeId: this.dataTypeId });
 	}
 
 	public async requestChildrenOf(parentUnique: string | null) {
 		await this.#init;
 		if (parentUnique === undefined) throw new Error('Parent unique cannot be undefined.');
-		return this.repository!.requestTreeItemsOf(parentUnique);
+		return this.repository!.requestTreeItemsOf(parentUnique, { dataTypeId: this.dataTypeId  });
 	}
 
 	public async rootItems() {

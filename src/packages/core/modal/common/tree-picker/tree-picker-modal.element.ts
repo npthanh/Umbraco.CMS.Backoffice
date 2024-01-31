@@ -38,6 +38,8 @@ export class UmbTreePickerModalElement<TreeItemType extends UmbTreeItemModelBase
 	}
 
 	render() {
+		console.log('render', this.data?.dataTypeId);
+		//debugger;
 		return html`
 			<umb-body-layout headline="Select">
 				<uui-box>

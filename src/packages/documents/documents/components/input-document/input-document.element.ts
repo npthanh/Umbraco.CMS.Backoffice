@@ -147,6 +147,7 @@ export class UmbInputDocumentElement extends FormControlMixin(UmbLitElement) {
 	};
 
 	#openPicker() {
+		//debugger;
 		this.#pickerContext.openPicker({
 			dataTypeId: this.dataTypeId,
 			hideTreeRoot: true,

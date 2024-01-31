@@ -44,22 +44,28 @@ export class UmbTreeElement extends UmbLitElement {
 	private _hideTreeRoot = false;
 	@property({ type: Boolean, attribute: 'hide-tree-root' })
 	set hideTreeRoot(newVal: boolean) {
-		const oldVal = this._hideTreeRoot;
+		//const oldVal = this._hideTreeRoot;
 		this._hideTreeRoot = newVal;
-		if (newVal === true) {
-			this.#observeRootItems();
-		}
-
-		this.requestUpdate('hideTreeRoot', oldVal);
+		// if (newVal === true) {
+		// 	this.#observeRootItems();
+		// }
+		//this.requestUpdate('hideTreeRoot', oldVal);
 	}
 	get hideTreeRoot() {
 		return this._hideTreeRoot;
+	}
+
+	firstUpdated() {
+		if (this._hideTreeRoot) {
+			this.#observeRootItems();
+		}
 	}
 
 	// TODO: [LK] Having `dataTypeId` here doesn't feel right.
 	// I need help to understand how to pass the `dataTypeId` to the Management API.
 	@property({ type: String })
 	set dataTypeId(newVal) {
+		debugger;
 		this.#treeContext.dataTypeId = newVal;
 	}
 	get dataTypeId() {

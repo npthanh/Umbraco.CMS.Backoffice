@@ -51,11 +51,12 @@ export abstract class UmbTreeRepositoryBase<
 	 * @return {*}
 	 * @memberof UmbTreeRepositoryBase
 	 */
-	async requestRootTreeItems() {
+	// TODO: Make `args` generic. [LK]
+	async requestRootTreeItems(args: any) {
 		await this._init;
 
 		// TODO: I really don't want to include `dataTypeId` here! [LK]
-		const { data, error } = await this.#treeSource.getRootItems();
+		const { data, error } = await this.#treeSource.getRootItems(args);
 
 		if (data) {
 			this._treeStore!.appendItems(data.items);
@@ -70,11 +71,12 @@ export abstract class UmbTreeRepositoryBase<
 	 * @return {*}
 	 * @memberof UmbTreeRepositoryBase
 	 */
-	async requestTreeItemsOf(parentUnique: string | null) {
+		// TODO: Make `args` generic. [LK]
+	async requestTreeItemsOf(parentUnique: string | null, args: any) {
 		if (parentUnique === undefined) throw new Error('Parent unique is missing');
 		await this._init;
 
-		const { data, error } = await this.#treeSource.getChildrenOf(parentUnique);
+		const { data, error } = await this.#treeSource.getChildrenOf(parentUnique, args);
 
 		if (data) {
 			this._treeStore!.appendItems(data.items);

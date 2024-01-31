@@ -49,6 +49,8 @@ export class UmbPropertyEditorUITreePickerElement extends UmbLitElement implemen
 
 		this.allowedContentTypeIds = config?.getValueByAlias('filter');
 		this.showOpenButton = config?.getValueByAlias('showOpenButton');
+
+		this.dataTypeId = '21718d44-06f9-41a5-880c-e74d0b073dae';
 	}
 
 	#onChange(e: CustomEvent) {

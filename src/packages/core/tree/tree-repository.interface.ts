@@ -13,7 +13,8 @@ export interface UmbTreeRepository<
 		error?: ProblemDetails;
 	}>;
 
-	requestTreeItemsOf: (parentUnique: string | null) => Promise<{
+	// TODO: Make `args` generic. [LK]
+	requestTreeItemsOf: (parentUnique: string | null, args: any) => Promise<{
 		data?: UmbPagedModel<TreeItemType>;
 		error?: ProblemDetails;
 		asObservable?: () => Observable<TreeItemType[]>;
@@ -25,7 +26,8 @@ export interface UmbTreeRepository<
 	Logic to call the root endpoint should be in the data source
 	because it is a server decision to split them
 	*/
-	requestRootTreeItems: () => Promise<{
+	// TODO: Make `args` generic. [LK]
+	requestRootTreeItems: (args: any) => Promise<{
 		data?: UmbPagedModel<TreeItemType>;
 		error?: ProblemDetails;
 		asObservable?: () => Observable<TreeItemType[]>;
