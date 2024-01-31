@@ -15,14 +15,6 @@ export type UmbTreeSelectionConfiguration = {
 
 @customElement('umb-tree-default')
 export class UmbTreeDefaultElement extends UmbLitElement {
-	@property({ type: String, reflect: true })
-	set alias(newVal) {
-		this._treeContext?.setTreeAlias(newVal);
-	}
-	get alias() {
-		return this._treeContext?.getTreeAlias();
-	}
-
 	private _selectionConfiguration: UmbTreeSelectionConfiguration = {
 		multiple: false,
 		selectable: true,

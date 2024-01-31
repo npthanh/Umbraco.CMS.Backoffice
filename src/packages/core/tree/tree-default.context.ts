@@ -35,14 +35,11 @@ export class UmbTreeDefaultContext<TreeItemType extends UmbTreeItemModelBase>
 	#treeRoot = new UmbObjectState<TreeItemType | undefined>(undefined);
 	treeRoot = this.#treeRoot.asObservable();
 
-	// TODO: We don't really want `dataTypeId` here. [LK]
-	//public dataTypeId?: string;
 	public repository?: UmbTreeRepository<TreeItemType>;
 	public selectableFilter?: (item: TreeItemType) => boolean = () => true;
 	public filter?: (item: TreeItemType) => boolean = () => true;
 	public readonly selection = new UmbSelectionManager(this._host);
 
-	#treeAlias?: string;
 	#actionEventContext?: UmbActionEventContext;
 
 	#initResolver?: () => void;
@@ -54,8 +51,6 @@ export class UmbTreeDefaultContext<TreeItemType extends UmbTreeItemModelBase>
 
 	constructor(host: UmbControllerHostElement) {
 		super(host, 'umbTreeContext');
-
-		//debugger;
 
 		this.consumeContext(UMB_ACTION_EVENT_CONTEXT, (instance) => {
 			this.#actionEventContext = instance;
@@ -80,18 +75,8 @@ export class UmbTreeDefaultContext<TreeItemType extends UmbTreeItemModelBase>
 		}
 	}
 
-	public async setTreeAlias(treeAlias?: string) {
-		if (this.#treeAlias === treeAlias) return;
-		this.#treeAlias = treeAlias;
-
-		//this.#observeTreeManifest();
-	}
-
-	public getTreeAlias() {
-		return this.#treeAlias;
-	}
-
 	public async requestTreeRoot() {
+		debugger;
 		await this._init;
 
 		const { data } = await this.repository!.requestTreeRoot();
@@ -104,8 +89,6 @@ export class UmbTreeDefaultContext<TreeItemType extends UmbTreeItemModelBase>
 	}
 
 	public async requestRootItems() {
-		//console.log('requestRootItems', this.dataTypeId);
-		//debugger;
 		await this._init;
 		return this.repository!.requestRootTreeItems({});
 	}
@@ -140,19 +123,6 @@ export class UmbTreeDefaultContext<TreeItemType extends UmbTreeItemModelBase>
 	public getManifest() {
 		return this.#manifest;
 	}
-
-	// #observeTreeManifest() {
-	// 	if (this.#treeAlias) {
-	// 		this.observe(
-	// 			umbExtensionsRegistry.getByTypeAndAlias('tree', this.#treeAlias),
-	// 			async (treeManifest) => {
-	// 				if (!treeManifest) return;
-	// 				this.#observeRepository(treeManifest);
-	// 			},
-	// 			'_observeTreeManifest',
-	// 		);
-	// 	}
-	// }
 
 	#observeRepository(treeManifest: ManifestTree) {
 		const repositoryAlias = treeManifest.meta.repositoryAlias;

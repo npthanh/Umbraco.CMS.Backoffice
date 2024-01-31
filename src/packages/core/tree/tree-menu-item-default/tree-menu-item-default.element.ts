@@ -28,7 +28,6 @@ export class UmbMenuItemTreeDefaultElement extends UmbLitElement implements UmbM
 	render() {
 		return this.manifest
 			? html`
-					<h2>hello</h2>
 					<umb-tree
 						alias=${this.manifest?.meta.treeAlias}
 						.props=${{
