@@ -2,6 +2,8 @@ import { html, customElement, property, state } from '@umbraco-cms/backoffice/ex
 import { UmbLitElement } from '@umbraco-cms/internal/lit-element';
 import { UmbTextStyles } from '@umbraco-cms/backoffice/style';
 import { UmbPropertyValueChangeEvent } from '@umbraco-cms/backoffice/property-editor';
+import { UMB_DOCUMENT_WORKSPACE_CONTEXT } from '@umbraco-cms/backoffice/document';
+import { UMB_PROPERTY_CONTEXT } from '@umbraco-cms/backoffice/property';
 import type { UmbPropertyEditorConfigCollection } from '@umbraco-cms/backoffice/property-editor';
 import type { UmbPropertyEditorUiElement } from '@umbraco-cms/backoffice/extension-registry';
 import type { UmbInputTreeElement } from '@umbraco-cms/backoffice/tree';
@@ -49,8 +51,27 @@ export class UmbPropertyEditorUITreePickerElement extends UmbLitElement implemen
 
 		this.allowedContentTypeIds = config?.getValueByAlias('filter');
 		this.showOpenButton = config?.getValueByAlias('showOpenButton');
+	}
 
-		this.dataTypeId = '21718d44-06f9-41a5-880c-e74d0b073dae';
+	constructor() {
+		super();
+
+		// Gets the Data Type ID for the current property.
+		this.consumeContext(UMB_PROPERTY_CONTEXT, (propertyContext) => {
+			// TODO: [LK:2024-02-01] Replace `UMB_DOCUMENT_WORKSPACE_CONTEXT`
+			// with an abstracted context that supports both document and media workspaces.
+			this.consumeContext(UMB_DOCUMENT_WORKSPACE_CONTEXT, (workspaceContext) => {
+				this.observe(propertyContext.alias, (propertyAlias) => {
+					if (propertyAlias) {
+						workspaceContext.structure.getPropertyStructureByAlias(propertyAlias).then((property) => {
+							if (property) {
+								this.dataTypeId = property.dataType.unique;
+							}
+						});
+					}
+				});
+			});
+		});
 	}
 
 	#onChange(e: CustomEvent) {
@@ -59,6 +80,7 @@ export class UmbPropertyEditorUITreePickerElement extends UmbLitElement implemen
 	}
 
 	render() {
+		if (!this.dataTypeId && (this.type === 'content' || this.type === 'media')) return;
 		return html`<umb-input-tree
 			.value=${this.value}
 			.type=${this.type}
