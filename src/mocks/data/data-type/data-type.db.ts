@@ -1,7 +1,7 @@
 import { UmbEntityMockDbBase } from '../utils/entity/entity-base.js';
 import { UmbMockEntityFolderManager } from '../utils/entity/entity-folder.manager.js';
 import { UmbMockEntityTreeManager } from '../utils/entity/entity-tree.manager.js';
-import { folderTreeItemMapper } from '../utils.js';
+import { folderTreeItemMapper, queryFilter } from '../utils.js';
 import { UmbMockEntityItemManager } from '../utils/entity/entity-item.manager.js';
 import { UmbMockEntityDetailManager } from '../utils/entity/entity-detail.manager.js';
 import type { UmbMockDataTypeModel } from './data-type.data.js';
@@ -12,7 +12,15 @@ import type {
 	CreateFolderRequestModel,
 	DataTypeItemResponseModel,
 	DataTypeResponseModel,
+	PagedDataTypeItemResponseModel,
 } from '@umbraco-cms/backoffice/external/backend-api';
+
+const dataTypeNameFilter = (filterOptions: any, item: UmbMockDataTypeModel) =>
+	queryFilter(filterOptions.name, item.name);
+const dataTypeEditorUiAliasFilter = (filterOptions: any, item: UmbMockDataTypeModel) =>
+	queryFilter(filterOptions.editorUiAlias, item.editorUiAlias);
+const dataTypeEditorAliasFilter = (filterOptions: any, item: UmbMockDataTypeModel) =>
+	queryFilter(filterOptions.editorAlias, item.editorAlias);
 
 class UmbDataTypeMockDB extends UmbEntityMockDbBase<UmbMockDataTypeModel> {
 	tree = new UmbMockEntityTreeManager<UmbMockDataTypeModel>(this, folderTreeItemMapper);
@@ -22,6 +30,30 @@ class UmbDataTypeMockDB extends UmbEntityMockDbBase<UmbMockDataTypeModel> {
 
 	constructor(data: Array<UmbMockDataTypeModel>) {
 		super(data);
+	}
+
+	filter(options: any): PagedDataTypeItemResponseModel {
+		const allItems = this.getAll();
+
+		const filterOptions = {
+			skip: options.skip || 0,
+			take: options.take || 25,
+			name: options.name,
+			editorUiAlias: options.editorUiAlias,
+			editorAlias: options.editorAlias,
+		};
+
+		const filteredItems = allItems.filter(
+			(item) =>
+				dataTypeNameFilter(filterOptions, item) &&
+				dataTypeEditorUiAliasFilter(filterOptions, item) &&
+				dataTypeEditorAliasFilter(filterOptions, item),
+		);
+
+		const totalItems = filteredItems.length;
+		const paginatedItems = filteredItems.slice(filterOptions.skip, filterOptions.skip + filterOptions.take);
+
+		return { total: totalItems, items: paginatedItems };
 	}
 }
 
