@@ -131,9 +131,9 @@ class UmbUserMockDB extends UmbEntityMockDbBase<UmbMockUserModel> {
 			take: options.take || 25,
 			orderBy: options.orderBy || 'name',
 			orderDirection: options.orderDirection || 'asc',
-			userGroupIds: options.userGroupIds,
-			userStates: options.userStates,
-			filter: options.filter,
+			userGroupIds: options.userGroupIds || [],
+			userStates: options.userStates || [],
+			filter: options.filter || '',
 		};
 
 		const filteredItems = allItems.filter(
@@ -142,6 +142,7 @@ class UmbUserMockDB extends UmbEntityMockDbBase<UmbMockUserModel> {
 				userStateFilter(filterOptions, item) &&
 				userQueryFilter(filterOptions, item),
 		);
+
 		const totalItems = filteredItems.length;
 
 		const paginatedItems = filteredItems.slice(filterOptions.skip, filterOptions.skip + filterOptions.take);
